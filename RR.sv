@@ -25,13 +25,11 @@ module rr_arbiter #(
 	pos_r <= '0
 	end
       else begin 
-	//m <= p;
+	pos_r <= pos;
 	m<= gnt_o;
 	end
     end 
   
-always_comb
-begin 
 always_comb
 begin 
 gnt_local=4'b0;
@@ -53,7 +51,7 @@ if(req_i>m ) begin   /////////If the Requested Clients value is Greater than the
 else if(req_i<=gnt_o ) begin  /////////If the Requested Clients value is less than or equal to  the Last Granted value//////
    for( int n=0; n<= pos; n++)
 	begin 
-          if(req_i[n]==1 && p==2'b00)
+          if(req_i[n]==1)
             begin 
               gnt_o[n-1]=1'b1;
             end

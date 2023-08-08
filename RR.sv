@@ -52,5 +52,7 @@ else if(req_i<=gnt_o ) begin
 end
 else gnt_o= 4'b0;
 end
-  
+///// Logic o find the Right Most bit in Sequence
+	assign gnt_o= gnt_local & ~(gnt_local-1); //// This will find the RIght Most 1 Bit.
+	
 endmodule

@@ -21,19 +21,36 @@ module rr_arbiter #(
       else m <= p;  /////// Pointer to locate the bit which was granted access last time..
     end 
   
-  always_comb
-    begin 
-        p=m;  ////Putting default to m 
-        gnt_o=4'b0; /// putting default to 0 
-      for(int n=1; n<= NUM_PORTS; n++)
-        begin 
-          if(req_i[n-1]==1 && ( n >= m && m==p))  /////////taking care of 1 grant per clock cycle
+ always_comb
+begin 
+gnt_local=4'b0;
+if(req_i>gnt_o ) begin
+ for( int n=m; n<= NUM_PORTS-1; n++)
+	begin 
+          if(req_i[n]==1)// && p==2'b00)
             begin 
               gnt_o[n]=1'b1;
-              p=n;
             end
-          else gnt_o[n] =1'b0;
+          else begin 
+		gnt_o[n] =1'b0;
+		//p=2'b00;
+               end
+	end
+end
+else if(req_i<=gnt_o ) begin 
+//p=2'b00;
+ for( int n=0; n<= m; n++)
+	begin 
+          if(req_i[n]==1 && p==2'b00)
+            begin 
+              gnt_o[n-1]=1'b1;
+            end
+          else begin 
+		gnt_o[n] =1'b0;
         end
-    end
+	end
+end
+else gnt_o= 4'b0;
+end
   
 endmodule

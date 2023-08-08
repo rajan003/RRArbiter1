@@ -22,7 +22,7 @@ module rr_arbiter #(
     begin
       if(reset) begin 
 	m <= '0;
-	pos_r <= '0
+	pos_r <= '0;
 	end
       else begin 
 	pos_r <= pos;
@@ -38,12 +38,12 @@ if(req_i>m ) begin   /////////If the Requested Clients value is Greater than the
 	begin 
           if(req_i[n]==1)// && p==2'b00)
             begin 
-              gnt_o[n]=1'b1;
+              gnt_local[n]=1'b1;
 		break;
 		//p=2'b01;
             end
           else begin 
-		gnt_o[n] =1'b0;
+		gnt_local[n] =1'b0;
 		//p=2'b00;
                end
 	end
@@ -53,16 +53,14 @@ else if(req_i<=gnt_o ) begin  /////////If the Requested Clients value is less th
 	begin 
           if(req_i[n]==1)
             begin 
-              gnt_o[n-1]=1'b1;
+              gnt_local[n-1]=1'b1;
             end
           else begin 
-		gnt_o[n] =1'b0;
-		//p=2'b00;
+		gnt_local[n] =1'b0;
         end
 	end
   end
-else gnt_o= 4'b0;
-end
+else gnt_local= 4'b0;
 end
 
 assign gnt_o= gnt_local &  ~(gnt_local-1); //// this calculates the Right Most 1 bit

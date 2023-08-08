@@ -34,17 +34,14 @@ always_comb
 begin 
 gnt_local=4'b0;
 if(req_i>m ) begin   /////////If the Requested Clients value is Greater than the Last Granted value//////
-   for( int n=pos_r+1; n<= NUM_PORTS-1; n++)
+   for( int n=pos_r; n<= NUM_PORTS-1; n++)
 	begin 
           if(req_i[n]==1)// && p==2'b00)
             begin 
               gnt_local[n]=1'b1;
-		break;
-		//p=2'b01;
             end
           else begin 
 		gnt_local[n] =1'b0;
-		//p=2'b00;
                end
 	end
   end
@@ -64,6 +61,6 @@ else gnt_local= 4'b0;
 end
 
 assign gnt_o= gnt_local &  ~(gnt_local-1); //// this calculates the Right Most 1 bit
-assign pos = $clog2(gnt_o)-1;
+	assign pos = $clog2(gnt_o); ///// This will calculate the position of the Last Granted request in the array
 	
 endmodule

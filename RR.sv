@@ -11,35 +11,47 @@ module rr_arbiter #(
 );
 
   // Write your logic here...
-  logic [$clog2(NUM_PORTS)-1:0]m;
-  logic [$clog2(NUM_PORTS)-1:0]p;
-
-  int n; ///
-  always@(posedge clk, posedge reset)
+  logic [NUM_PORTS-1:0]m;
+ logic [NUM_PORTS-1:0]gnt_local;
+ logic [NUM_PORTS-1:0]pos_r;
+ logic [NUM_PORTS-1:0]pos;
+// logic [$clog2(NUM_PORTS)-1:0]m;
+//  logic [$clog2(NUM_PORTS)-1:0]p;
+ // logic [NUM_PORTS-1:0]reg_in;
+ always@(posedge clk, posedge reset)
     begin
-      if(reset) m <= '0;
-      else m <= p;  /////// Pointer to locate the bit which was granted access last time..
+      if(reset) begin 
+	m <= '0;
+	pos_r <= '0
+	end
+      else begin 
+	//m <= p;
+	m<= gnt_o;
+	end
     end 
   
- always_comb
+always_comb
+begin 
+always_comb
 begin 
 gnt_local=4'b0;
-if(req_i>gnt_o ) begin
- for( int n=m; n<= NUM_PORTS-1; n++)
+if(req_i>m ) begin   /////////If the Requested Clients value is Greater than the Last Granted value//////
+   for( int n=pos_r+1; n<= NUM_PORTS-1; n++)
 	begin 
           if(req_i[n]==1)// && p==2'b00)
             begin 
               gnt_o[n]=1'b1;
+		break;
+		//p=2'b01;
             end
           else begin 
 		gnt_o[n] =1'b0;
 		//p=2'b00;
                end
 	end
-end
-else if(req_i<=gnt_o ) begin 
-//p=2'b00;
- for( int n=0; n<= m; n++)
+  end
+else if(req_i<=gnt_o ) begin  /////////If the Requested Clients value is less than or equal to  the Last Granted value//////
+   for( int n=0; n<= pos; n++)
 	begin 
           if(req_i[n]==1 && p==2'b00)
             begin 
@@ -47,12 +59,15 @@ else if(req_i<=gnt_o ) begin
             end
           else begin 
 		gnt_o[n] =1'b0;
+		//p=2'b00;
         end
 	end
-end
+  end
 else gnt_o= 4'b0;
 end
-///// Logic o find the Right Most bit in Sequence
-	assign gnt_o= gnt_local & ~(gnt_local-1); //// This will find the RIght Most 1 Bit.
+end
+
+assign gnt_o= gnt_local &  ~(gnt_local-1); //// this calculates the Right Most 1 bit
+assign pos = $clog2(gnt_o)-1;
 	
 endmodule

@@ -45,12 +45,12 @@ else if(req_i_masked>m ) begin   /////////If the Requested Clients(masked) value
                end
 	end
   end
-  else if(req_i_masked<=gnt_o ) begin  /////////If the Requested Clients value is less than or equal to  the Last Granted value//////
+	else if(req_i_masked<=m ) begin  /////////If the Requested Clients value is less than or equal to  the Last Granted value//////
    for( int n=0; n<= pos; n++)
 	begin 
 	if(req_i_masked[n]==1)
             begin 
-              gnt_local[n-1]=1'b1;
+              gnt_local[n]=1'b1;
             end
           else begin 
 		gnt_local[n] =1'b0;
